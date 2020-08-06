@@ -7,8 +7,10 @@ const {
   getWeatherForecast,
   getCity,
   getHottestDay,
+  getWeatherFrequencies,
 } = require("../functions/weatherFunctions");
 
+//testing fetchWeatherData function
 describe("fetchWeatherData()", () => {
   it("should throw an error if there isn't an ok response from the server", () => {
     sinon.stub(fetch, "Promise").returns({ ok: false });
@@ -57,6 +59,7 @@ describe("fetchWeatherData()", () => {
   });
 });
 
+//testing getWeatherForecast function
 describe("getWeatherForecast()", () => {
   it("should return the correct weather forecast for a given input", () => {
     const weatherData = {
@@ -75,6 +78,7 @@ describe("getWeatherForecast()", () => {
   });
 });
 
+//testing getCity function
 describe("getCity()", () => {
   it("should throw an error if there isn't an ok response from the server", () => {
     sinon.stub(fetch, "Promise").returns({ ok: false });
@@ -112,6 +116,7 @@ describe("getCity()", () => {
   });
 });
 
+//testing getHottestDay function
 describe("getHottestDay()", () => {
   it("should return a string with the hottest day of the week", () => {
     let days = [
@@ -126,5 +131,57 @@ describe("getHottestDay()", () => {
 
     const result = getHottestDay(days);
     expect(result).to.equal("This week the hottest day will be Friday");
+  });
+});
+
+//testing getWeatherFrequencies function
+describe("getWeatherFrequencies()", () => {
+  it("should return the correct output for the given input", () => {
+    let days = [
+      { icon: "partly-cloudy-day" },
+      { icon: "clear-day" },
+      { icon: "partly-cloudy-day" },
+      { icon: "rain" },
+    ];
+
+    let result = getWeatherFrequencies(days);
+
+    expect(result).to.contain("1 days rain");
+    expect(result).to.contain("2 days partly cloudy");
+    expect(result).to.contain("1 days clear");
+  });
+
+  it("should return the correct output for the given input", () => {
+    let days = [
+      { icon: "snow" },
+      { icon: "snow" },
+      { icon: "partly-cloudy-day" },
+      { icon: "rain" },
+    ];
+
+    let result = getWeatherFrequencies(days);
+
+    expect(result).to.contain("1 days partly cloudy");
+    expect(result).to.contain("2 days snow");
+    expect(result).to.contain("1 days rain");
+  });
+
+  it("should return the correct output for the given input", () => {
+    let days = [
+      { icon: "clear-day" },
+      { icon: "rain" },
+      { icon: "partly-cloudy-day" },
+      { icon: "rain" },
+      { icon: "rain" },
+      { icon: "rain" },
+      { icon: "thunder" },
+    ];
+
+    let result = getWeatherFrequencies(days);
+
+    expect(result).to.contain("1 days clear");
+    expect(result).to.contain("4 days rain");
+    expect(result).to.contain("1 days thunder");
+    expect(result).to.contain("1 days partly cloudy");
   });
 });

@@ -51,7 +51,7 @@ const getCity = async (cityName) => {
   }
 };
 
-//return a string stating the hottest day this week
+//return a string stating the hottest day given an array of day objects
 const getHottestDay = (days) => {
   const daysOfWeek = [
     "Sunday",
@@ -73,7 +73,51 @@ const getHottestDay = (days) => {
   return `This week the hottest day will be ${hottestDay}`;
 };
 
+//return a string with amount of each type of weather given an array of day objects
+const getWeatherFrequencies = (days) => {
+  let frequencies = {};
+
+  //extract the icon from each day and increase its frequency by 1 for each occurance
+  days.map((day) => {
+    let icon = day.icon;
+    if (frequencies[icon]) {
+      frequencies[icon]++;
+    } else {
+      frequencies[icon] = 1;
+    }
+  });
+
+  //renaming for output to the user
+  if (frequencies["partly-cloudy-day"]) {
+    frequencies["partly cloudy"] = frequencies["partly-cloudy-day"];
+    delete frequencies["partly-cloudy-day"];
+  }
+  //renaming for output to the user
+  if (frequencies["clear-day"]) {
+    frequencies["clear"] = frequencies["clear-day"];
+    delete frequencies["clear-day"];
+  }
+  let weatherFrequencies = `This week we should have`;
+
+  //generate the return string
+  const frequencyLength = Object.keys(frequencies).length;
+  Object.keys(frequencies).map((frequency, index) => {
+    let count = frequencies[frequency];
+    if (index < frequencyLength - 2) {
+      weatherFrequencies = weatherFrequencies + ` ${count} days ${frequency},`;
+    } else if (index === frequencyLength - 2) {
+      weatherFrequencies = weatherFrequencies + ` ${count} days ${frequency}`;
+    } else {
+      weatherFrequencies =
+        weatherFrequencies + ` and ${count} days ${frequency}`;
+    }
+  });
+
+  return weatherFrequencies;
+};
+
 module.exports.fetchWeatherData = fetchWeatherData;
 module.exports.getWeatherForecast = getWeatherForecast;
 module.exports.getCity = getCity;
 module.exports.getHottestDay = getHottestDay;
+module.exports.getWeatherFrequencies = getWeatherFrequencies;
