@@ -1,6 +1,6 @@
 const fetch = require("node-fetch");
 
-//retrieve weather data from API given latitude and longtitude
+//return weather data from API given latitude and longtitude
 const fetchWeatherData = async (lat, long) => {
   try {
     const response = await fetch(
@@ -17,4 +17,17 @@ const fetchWeatherData = async (lat, long) => {
   }
 };
 
+//return todays weather forecast given weather data
+const getWeatherForecast = (weatherData) => {
+  const currentSummary = weatherData["currently"]["summary"];
+  const hourlySummary = weatherData["hourly"]["summary"];
+
+  //conversion from probabilty between 0 and 1 into percentage value
+  const currentlyPrecipProb =
+    +weatherData["currently"]["precipProbability"] * 100;
+
+  return `Current weather - ${currentSummary}, Today we will see - ${hourlySummary} with a ${currentlyPrecipProb}% chance of rain.`;
+};
+
 module.exports.fetchWeatherData = fetchWeatherData;
+module.exports.getWeatherForecast = getWeatherForecast;

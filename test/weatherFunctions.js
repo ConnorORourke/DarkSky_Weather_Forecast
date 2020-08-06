@@ -2,7 +2,10 @@ const expect = require("chai").expect;
 const sinon = require("sinon");
 const fetch = require("node-fetch");
 
-const { fetchWeatherData } = require("../functions/weatherFunctions");
+const {
+  fetchWeatherData,
+  getWeatherForecast,
+} = require("../functions/weatherFunctions");
 
 describe("fetchWeatherData()", () => {
   it("should throw an error if there isn't an ok response from the server", (done) => {
@@ -53,5 +56,23 @@ describe("fetchWeatherData()", () => {
       .catch((err) => {
         done();
       });
+  });
+});
+
+describe("getWeatherForecast()", () => {
+  it("should return the correct weather forecast for a given input", () => {
+    const weatherData = {
+      currently: {
+        summary: "Mostly Cloudy",
+        precipProbability: "0.1",
+      },
+      hourly: {
+        summary: "Possible light rain.",
+      },
+    };
+    const weatherForecast = getWeatherForecast(weatherData);
+    expect(weatherForecast).to.equal(
+      "Current weather - Mostly Cloudy, Today we will see - Possible light rain. with a 10% chance of rain."
+    );
   });
 });
