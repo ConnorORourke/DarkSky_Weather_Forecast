@@ -1,10 +1,10 @@
 const fetch = require("node-fetch");
 
 //return weather data from API given latitude and longtitude
-const fetchWeatherData = async (lat, long) => {
+const fetchWeatherData = async (coord) => {
   try {
     const response = await fetch(
-      `https://api.darksky.net/forecast/${process.env.DARKSKY_API_KEY}/${lat},${long}`
+      `https://api.darksky.net/forecast/${process.env.DARKSKY_API_KEY}/${coord.lat},${coord.lng}`
     );
     if (response.ok) {
       const weatherData = await response.json();
@@ -29,5 +29,28 @@ const getWeatherForecast = (weatherData) => {
   return `Current weather - ${currentSummary}, Today we will see - ${hourlySummary} with a ${currentlyPrecipProb}% chance of rain.`;
 };
 
+//retun a co-ordinate object given a city name, or a string response if no city was found
+const getCity = async (cityName) => {
+  try {
+    const response = await fetch(
+      "https://raw.githubusercontent.com/lutangar/cities.json/master/cities.json"
+    );
+    if (response.ok) {
+      const cityData = await response.json();
+      //search through the city data for a match
+      const city = cityData.find((cityObj) => cityObj.name === cityName);
+      if (city) {
+        return { lat: city.lat, lng: city.lng };
+      }
+      return `No results found for ${cityName}`;
+    } else {
+      throw new Error("Unable to retrieve cities");
+    }
+  } catch (err) {
+    throw err;
+  }
+};
+
 module.exports.fetchWeatherData = fetchWeatherData;
 module.exports.getWeatherForecast = getWeatherForecast;
+module.exports.getCity = getCity;
