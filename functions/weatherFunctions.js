@@ -51,6 +51,29 @@ const getCity = async (cityName) => {
   }
 };
 
+//return a string stating the hottest day this week
+const getHottestDay = (days) => {
+  const daysOfWeek = [
+    "Sunday",
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+  ];
+
+  //retrieve object with hottest temperature
+  const hottestDayObj = days.reduce((prev, current) =>
+    +prev.temperatureMax > +current.temperatureMax ? prev : current
+  );
+  const hottestDateObj = new Date(hottestDayObj.time * 1000);
+  const hottestDay = daysOfWeek[hottestDateObj.getDay()];
+
+  return `This week the hottest day will be ${hottestDay}`;
+};
+
 module.exports.fetchWeatherData = fetchWeatherData;
 module.exports.getWeatherForecast = getWeatherForecast;
 module.exports.getCity = getCity;
+module.exports.getHottestDay = getHottestDay;

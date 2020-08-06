@@ -6,6 +6,7 @@ const {
   fetchWeatherData,
   getWeatherForecast,
   getCity,
+  getHottestDay,
 } = require("../functions/weatherFunctions");
 
 describe("fetchWeatherData()", () => {
@@ -33,7 +34,7 @@ describe("fetchWeatherData()", () => {
     return fetchWeatherData({ lat: 60.59329987, lng: -1.44250533 }).then(
       (result) => {
         expect(result).to.have.property("hourly");
-        expect(result.currently).to.have.property("summary");
+        expect(result.hourly).to.have.property("summary");
       }
     );
   });
@@ -43,6 +44,14 @@ describe("fetchWeatherData()", () => {
       (result) => {
         expect(result).to.have.property("currently");
         expect(result.currently).to.have.property("precipProbability");
+      }
+    );
+  });
+  it("should return an object with data at object.daily.data", () => {
+    return fetchWeatherData({ lat: 60.59329987, lng: -1.44250533 }).then(
+      (result) => {
+        expect(result).to.have.property("daily");
+        expect(result.daily).to.have.property("data");
       }
     );
   });
@@ -100,5 +109,22 @@ describe("getCity()", () => {
       expect(result).to.have.property("lat");
       expect(result).to.have.property("lng");
     });
+  });
+});
+
+describe("getHottestDay()", () => {
+  it("should return a string with the hottest day of the week", () => {
+    let days = [
+      { dayForReference: "Monday", time: 1596412800, temperatureMax: 10 },
+      { dayForReference: "Tuesday", time: 1596499200, temperatureMax: 20 },
+      { dayForReference: "Wednesday", time: 1596585600, temperatureMax: 30 },
+      { dayForReference: "Thursday", time: 1596672000, temperatureMax: 20 },
+      { dayForReference: "Friday", time: 1596758400, temperatureMax: 31 },
+      { dayForReference: "Saturday", time: 1596844800, temperatureMax: 30 },
+      { dayForReference: "Sunday", time: 1596931200, temperatureMax: -40 },
+    ];
+
+    const result = getHottestDay(days);
+    expect(result).to.equal("This week the hottest day will be Friday");
   });
 });

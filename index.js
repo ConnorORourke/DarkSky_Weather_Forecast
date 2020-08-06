@@ -2,19 +2,25 @@ const {
   fetchWeatherData,
   getWeatherForecast,
   getCity,
+  getHottestDay,
 } = require("./functions/weatherFunctions");
 
 const run = async () => {
   try {
+    let weatherForecast = "";
+    let hottestDay = "";
+
     //fetch city data, if there is any, passing in user input
     let response = await getCity(process.argv[2]);
     if (typeof response === "object") {
       const weatherData = await fetchWeatherData(response);
-      response = getWeatherForecast(weatherData);
+      weatherForecast = getWeatherForecast(weatherData);
+      hottestDay = getHottestDay(weatherData["daily"]["data"]);
+    } else {
+      weatherForecast = response;
     }
-
-    //response will either be the weather forecast, or a message that nothing was found
-    console.log(response);
+    console.log(weatherForecast);
+    console.log(hottestDay);
   } catch (err) {
     console.log(err.message);
   }
